@@ -11,9 +11,6 @@ import NewspaperIcon from "@mui/icons-material/Newspaper";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import SummarizeIcon from "@mui/icons-material/Summarize";
 import { Link as RouterLink } from "react-router-dom";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { useDispatch } from "react-redux";
-import { logout } from "../../redux/userSlice";
 
 export const mainListItems = (
   <React.Fragment>
