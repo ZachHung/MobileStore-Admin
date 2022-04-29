@@ -23,32 +23,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { visuallyHidden } from "@mui/utils";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
-
-function createData(name, calories, fat, carbs, protein) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
-
-const rows = [
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Donut", 452, 25.0, 51, 4.9),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Honeycomb", 408, 3.2, 87, 6.5),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Jelly Bean", 375, 0.0, 94, 0.0),
-  createData("KitKat", 518, 26.0, 65, 7.0),
-  createData("Lollipop", 392, 0.2, 98, 0.0),
-  createData("Marshmallow", 318, 0, 81, 2.0),
-  createData("Nougat", 360, 19.0, 9, 37.0),
-  createData("Oreo", 437, 18.0, 63, 4.0),
-];
+import { Request } from "../../utils/api";
+import Skeleton from "@mui/material/Skeleton";
+import { useSelector, useDispatch } from "react-redux";
+import { error, fetching, success } from "../../redux/userSlice";
+import { grid } from "@mui/system";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -68,34 +47,46 @@ function getComparator(order, orderBy) {
 
 const headCells = [
   {
-    id: "name",
+    id: "Id",
+    numeric: false,
+    disablePadding: false,
+    label: "ID",
+  },
+  {
+    id: "FullName",
     numeric: false,
     disablePadding: true,
-    label: "Dessert (100g serving)",
+    label: "Tên khách hàng",
   },
   {
-    id: "calories",
-    numeric: true,
-    disablePadding: false,
-    label: "Calories",
+    id: "UserName",
+    numeric: false,
+    disablePadding: true,
+    label: "Username",
   },
   {
-    id: "fat",
-    numeric: true,
-    disablePadding: false,
-    label: "Fat (g)",
+    id: "Birthday",
+    numeric: false,
+    disablePadding: true,
+    label: "Ngày sinh",
   },
   {
-    id: "carbs",
-    numeric: true,
-    disablePadding: false,
-    label: "Carbs (g)",
+    id: "PhoneNumber",
+    numeric: false,
+    disablePadding: true,
+    label: "SĐT",
   },
   {
-    id: "protein",
-    numeric: true,
-    disablePadding: false,
-    label: "Protein (g)",
+    id: "Email",
+    numeric: false,
+    disablePadding: true,
+    label: "Email",
+  },
+  {
+    id: "Gender",
+    numeric: false,
+    disablePadding: true,
+    label: "Giới tính",
   },
   {
     id: "options",
@@ -137,7 +128,8 @@ function EnhancedTableHead(props) {
             key={headCell.id}
             align={headCell.numeric ? "right" : "left"}
             padding={headCell.disablePadding ? "none" : "normal"}
-            sortDirection={orderBy === headCell.id ? order : false}>
+            sortDirection={orderBy === headCell.id ? order : false}
+            sx={{ fontWeight: "bold" }}>
             {headCell.id !== "options" ? (
               <TableSortLabel
                 active={orderBy === headCell.id}
@@ -237,6 +229,26 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [data, setData] = React.useState([]);
+  const state = useSelector((state) => state);
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(fetching());
+    Request.get("AccountController/GetAllAccount")
+      .then((res) => {
+        dispatch(success());
+        let filteredData = res.data
+          .filter((item) => item.Role !== "Admin")
+          .filter((item) => !item.IsDelete)
+          .map(({ PassWord, Role, isDelete, ...others }) => others);
+        setData(filteredData);
+      })
+      .catch((err) => {
+        dispatch(error);
+        console.log(err);
+      });
+  }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -246,7 +258,7 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = data.map((n) => n.Id);
       setSelected(newSelecteds);
       return;
     }
@@ -290,98 +302,114 @@ export default function EnhancedTable() {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
   return (
     <>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label='Phiên bản thu gọn '
-      />
-      <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby='tableTitle'
-            size={dense ? "small" : "medium"}>
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {rows
-                .slice()
-                .sort(getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.name)}
-                      role='checkbox'
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}>
-                      <TableCell padding='checkbox'>
-                        <Checkbox
-                          color='primary'
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component='th'
-                        id={labelId}
-                        scope='row'
-                        padding='none'>
-                        {row.name}
-                      </TableCell>
-                      <TableCell align='right'>{row.calories}</TableCell>
-                      <TableCell align='right'>{row.fat}</TableCell>
-                      <TableCell align='right'>{row.carbs}</TableCell>
-                      <TableCell align='right'>{row.protein}</TableCell>
-                      <TableCell align='right'>
-                        <Tooltip title='Sửa' placement='left'>
-                          <IconButton
-                            aria-label='edit'
-                            size={dense ? "small" : "medium"}>
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component='div'
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+      {!state.isFetching && (
+        <FormControlLabel
+          control={<Switch checked={dense} onChange={handleChangeDense} />}
+          label='Phiên bản thu gọn '
         />
+      )}
+      <Paper sx={{ width: "100%", mb: 2, p: 2 }}>
+        {!state.isFetching ? (
+          <EnhancedTableToolbar numSelected={selected.length} />
+        ) : (
+          <Skeleton variant='text' width='77%'>
+            <Typography variant='h2'>.</Typography>
+          </Skeleton>
+        )}
+        {!state.isFetching ? (
+          <>
+            <TableContainer>
+              <Table
+                sx={{ minWidth: 750 }}
+                aria-labelledby='tableTitle'
+                size={dense ? "small" : "medium"}>
+                <EnhancedTableHead
+                  numSelected={selected.length}
+                  order={order}
+                  orderBy={orderBy}
+                  onSelectAllClick={handleSelectAllClick}
+                  onRequestSort={handleRequestSort}
+                  rowCount={data.length}
+                />
+                <TableBody>
+                  {data
+                    .slice()
+                    .sort(getComparator(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      const isItemSelected = isSelected(row.Id);
+                      const labelId = `enhanced-table-checkbox-${index}`;
+                      return (
+                        <TableRow
+                          hover
+                          onClick={(event) => handleClick(event, row.Id)}
+                          role='checkbox'
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={row.Id}
+                          selected={isItemSelected}>
+                          <TableCell padding='checkbox'>
+                            <Checkbox
+                              color='primary'
+                              checked={isItemSelected}
+                              inputProps={{
+                                "aria-labelledby": labelId,
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell component='th' id={labelId} scope='row'>
+                            {row.Id}
+                          </TableCell>
+                          <TableCell padding='none'>{row.FullName}</TableCell>
+                          <TableCell padding='none'>{row.UserName}</TableCell>
+                          <TableCell padding='none'>{row.Birthday}</TableCell>
+                          <TableCell padding='none'>
+                            {row.PhoneNumber}
+                          </TableCell>
+                          <TableCell padding='none'>{row.Email}</TableCell>
+                          <TableCell padding='none'>
+                            {!row.Gender ? "Nam" : "Nữ"}
+                          </TableCell>
+                          <TableCell align='right'>
+                            <Tooltip title='Sửa' placement='left' arrow>
+                              <IconButton
+                                aria-label='edit'
+                                size={dense ? "small" : "medium"}>
+                                <EditIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  {emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: (dense ? 33 : 53) * emptyRows,
+                      }}>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component='div'
+              count={data.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </>
+        ) : (
+          <Skeleton variant='rectangular' width='100' height='30rem'></Skeleton>
+        )}
       </Paper>
     </>
   );

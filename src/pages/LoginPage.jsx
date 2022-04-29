@@ -15,12 +15,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LoadingButton from "@mui/lab/LoadingButton/index";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  loginFail,
-  loginStart,
-  loginSuccess,
-  logout,
-} from "../redux/userSlice";
+import { loginFail, fetching, loginSuccess, logout } from "../redux/userSlice";
 import { Request } from "../utils/api";
 import { IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -63,7 +58,7 @@ export default function SignInSide() {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(loginStart());
+    dispatch(fetching());
     const data = new FormData(event.currentTarget);
     const formData = {
       UserName: data.get("UserName"),
