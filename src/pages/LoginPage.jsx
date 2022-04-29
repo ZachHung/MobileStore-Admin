@@ -15,7 +15,12 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LoadingButton from "@mui/lab/LoadingButton/index";
 import { useDispatch, useSelector } from "react-redux";
-import { loginFail, loginStart, loginSuccess } from "../redux/userSlice";
+import {
+  loginFail,
+  loginStart,
+  loginSuccess,
+  logout,
+} from "../redux/userSlice";
 import { Request } from "../utils/api";
 import { IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -52,6 +57,10 @@ export default function SignInSide() {
     dispatch(loginSuccess(data));
     navigate("/");
   };
+  const handleFailure = () => {
+    dispatch(loginFail());
+    setTimeout(() => dispatch(logout()), 5000);
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
     dispatch(loginStart());
@@ -62,7 +71,7 @@ export default function SignInSide() {
     };
     Request.post("AccountController/AdminLogin", formData)
       .then((res) =>
-        res.data != null ? handleSuccess(res.data) : dispatch(loginFail())
+        res.data != null ? handleSuccess(res.data) : handleFailure()
       )
       .catch((err) => console.log(err));
   };
