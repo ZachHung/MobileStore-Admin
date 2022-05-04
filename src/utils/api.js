@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = `https://nhom01.somee.com/Api/`;
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 export const Request = axios.create({
   baseURL: BASE_URL,

@@ -248,7 +248,7 @@ export default function EnhancedTable() {
         dispatch(error);
         console.log(err);
       });
-  }, []);
+  }, [dispatch]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
