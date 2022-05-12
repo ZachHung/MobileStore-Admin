@@ -20,7 +20,7 @@ import { themeOptions } from "../../config/theme";
 import * as locales from "@mui/material/locale";
 import logo from "../../logo.svg";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { Tooltip } from "@mui/material";
+import { Avatar, Tooltip } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/userSlice";
 
@@ -30,7 +30,8 @@ function Copyright(props) {
       variant='body2'
       color='text.secondary'
       align='center'
-      {...props}>
+      {...props}
+    >
       {"Copyright © "}
       <Link color='inherit' href='https://mui.com/'>
         MobileStore
@@ -123,7 +124,8 @@ const Dashboard = () => {
           <Toolbar
             sx={{
               pr: "24px", // keep right padding when drawer closed
-            }}>
+            }}
+          >
             <IconButton
               edge='start'
               color='inherit'
@@ -132,7 +134,8 @@ const Dashboard = () => {
               sx={{
                 marginRight: "36px",
                 ...(open && { display: "none" }),
-              }}>
+              }}
+            >
               <MenuIcon />
             </IconButton>
             <Typography
@@ -140,9 +143,15 @@ const Dashboard = () => {
               variant='h6'
               color='inherit'
               noWrap
-              sx={{ flexGrow: 1 }}>
+              sx={{ flexGrow: 1 }}
+            >
               {pathMap[pathname]}
             </Typography>
+            <Avatar
+              alt={userState.current.FullName}
+              src={userState.current.Avatar}
+              sx={{ mr: 2 }}
+            />
             <Typography component='h2' variant='h6' color='inherit' noWrap>
               {userState.current.FullName}
             </Typography>
@@ -151,7 +160,8 @@ const Dashboard = () => {
               sx={{ ml: 1 }}
               onClick={() => {
                 dispatch(logout());
-              }}>
+              }}
+            >
               <IconButton color='inherit'>
                 <LogoutIcon />
               </IconButton>
@@ -165,7 +175,8 @@ const Dashboard = () => {
               alignItems: "center",
               justifyContent: "space-evenly",
               px: [1],
-            }}>
+            }}
+          >
             <img className='logo' style={logoStyle} src={logo} alt='' />
             <span style={mdTheme.typography.h6}>MobileStore</span>
             <IconButton onClick={toggleDrawer}>
@@ -190,7 +201,8 @@ const Dashboard = () => {
             flexGrow: 1,
             height: "100vh",
             overflow: "auto",
-          }}>
+          }}
+        >
           <Toolbar />
           <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>

@@ -163,15 +163,6 @@ const EnhancedTableToolbar = () => {
       >
         Danh Sách Hoá Đơn
       </Typography>
-
-      <Button
-        variant='contained'
-        sx={{ minWidth: "10rem" }}
-        size='large'
-        endIcon={<AddIcon />}
-      >
-        Thêm mới
-      </Button>
     </Toolbar>
   );
 };
