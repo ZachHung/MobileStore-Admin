@@ -162,18 +162,18 @@ export default function FormPropsTextFields() {
       .then((res) => {
         setCategory(res.data.Category);
         setProductData(res.data);
-      })
-      .catch((err) => console.log(err));
-    Request.get("ProductController/GetProductVersionByProductId/" + id)
-      .then((res) => {
-        setProductVersions(
-          res.data.map(({ Color, ...rest }) => {
-            return {
-              Color: Color.split("|"),
-              ...rest,
-            };
+        Request.get("ProductController/GetProductVersionByProductId/" + id)
+          .then((res) => {
+            setProductVersions(
+              res.data.map(({ Color, ...rest }) => {
+                return {
+                  Color: Color.split("|"),
+                  ...rest,
+                };
+              })
+            );
           })
-        );
+          .catch((err) => console.log(err));
       })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
