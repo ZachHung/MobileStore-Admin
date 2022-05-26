@@ -1,0 +1,19 @@
+.filepond--item {
+  width: calc(25% - 0.5em);
+}
+.filepond--label-action {
+  font-weight: bold;
+  color: #30b3f8;
+  text-decoration-color: #30b3f8;
+}
+.filepond--root {
+  color: #0f1739;
+  font-family: Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+}
+.filepond--panel {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+.error {
+  border: 2px solid #d32f2f;
+}

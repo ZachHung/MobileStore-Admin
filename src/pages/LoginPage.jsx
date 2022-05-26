@@ -16,7 +16,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LoadingButton from "@mui/lab/LoadingButton/index";
 import { useDispatch, useSelector } from "react-redux";
 import { loginFail, fetching, loginSuccess, logout } from "../redux/userSlice";
-import { Request } from "../utils/api";
+import { Request } from "../utils";
 import { IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Alert from "@mui/material/Alert";
@@ -29,7 +29,8 @@ function Copyright(props) {
       variant='body2'
       color='text.secondary'
       align='center'
-      {...props}>
+      {...props}
+    >
       {"Copyright © "}
       <Link color='inherit' href='https://mui.com/'>
         MobileStore
@@ -82,7 +83,8 @@ export default function SignInSide() {
           alignItems: "center",
           backgroundColor: theme.palette.primary.main,
           color: theme.palette.primary.contrastText,
-        }}>
+        }}
+      >
         <CssBaseline />
         <Box
           sx={{
@@ -92,13 +94,15 @@ export default function SignInSide() {
             justifyContent: "center",
             gap: "2rem",
             height: "100%",
-          }}>
+          }}
+        >
           <svg
             width='48'
             height='89'
             viewBox='0 0 20 37'
             fill='none'
-            xmlns='http://www.w3.org/2000/svg'>
+            xmlns='http://www.w3.org/2000/svg'
+          >
             <path
               d='M2.14676 27.699V34.8538H17.7847V27.699L19.9314 25.7567V35.5694L17.7847 37H2.14676L0 35.5694V25.7567L2.14676 27.699Z'
               fill='#F9FAFC'
@@ -129,7 +133,8 @@ export default function SignInSide() {
             <Typography
               component='span'
               variant='body1'
-              sx={{ position: "absolute", right: "-3.5rem" }}>
+              sx={{ position: "absolute", right: "-3.5rem" }}
+            >
               ADMIN
             </Typography>
           </Typography>
@@ -144,7 +149,8 @@ export default function SignInSide() {
             height: "80%",
             borderRadius: "1rem",
             width: "35rem",
-          }}>
+          }}
+        >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
@@ -155,7 +161,8 @@ export default function SignInSide() {
             component='form'
             noValidate
             onSubmit={handleSubmit}
-            sx={{ mt: 1 }}>
+            sx={{ mt: 1 }}
+          >
             <TextField
               margin='normal'
               required
@@ -183,7 +190,8 @@ export default function SignInSide() {
                     <IconButton
                       aria-label='toggle password visibility'
                       onClick={() => setShowPass(!showPass)}
-                      onMouseDown={(e) => e.preventDefault()}>
+                      onMouseDown={(e) => e.preventDefault()}
+                    >
                       {showPass ? <VisibilityOffIcon /> : <VisibilityIcon />}
                     </IconButton>
                   </InputAdornment>
@@ -202,7 +210,8 @@ export default function SignInSide() {
               type='submit'
               variant='contained'
               fullWidth
-              sx={{ mt: 3, mb: 2, py: 1.5 }}>
+              sx={{ mt: 3, mb: 2, py: 1.5 }}
+            >
               Đăng nhập
             </LoadingButton>
             <Copyright sx={{ mt: 5 }} />

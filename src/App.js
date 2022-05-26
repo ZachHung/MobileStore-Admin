@@ -12,6 +12,7 @@ import ReportSalesPage from "./pages/ReportSalesPage";
 import ReportPopularPage from "./pages/ReportPopularPage";
 import SignInSide from "./pages/LoginPage";
 import { useSelector } from "react-redux";
+import ProductsFormPage from "./pages/ProductsFormPage";
 
 function App() {
   const user = useSelector((state) => state.current);
@@ -29,6 +30,8 @@ function App() {
           <Route path='comments' element={<CommentsPage />} />
           <Route path='sales' element={<ReportSalesPage />} />
           <Route path='popular' element={<ReportPopularPage />} />
+          <Route path='products/add' element={<ProductsFormPage />} />
+          <Route path='products/edit/:id' element={<ProductsFormPage edit />} />
         </Route>
       </Route>
       {/* Public Routes */}
