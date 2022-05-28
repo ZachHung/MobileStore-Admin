@@ -13,6 +13,7 @@ import ReportPopularPage from "./pages/ReportPopularPage";
 import SignInSide from "./pages/LoginPage";
 import { useSelector } from "react-redux";
 import ProductsFormPage from "./pages/ProductsFormPage";
+import NewsFormPage from "./pages/NewsFormPage";
 
 function App() {
   const user = useSelector((state) => state.current);
@@ -26,12 +27,14 @@ function App() {
           <Route path='orders' element={<OrdersPage />} />
           <Route path='users' element={<UsersPage />} />
           <Route path='products' element={<ProductsPage />} />
+          <Route path='products/add' element={<ProductsFormPage />} />
+          <Route path='products/edit/:id' element={<ProductsFormPage edit />} />
           <Route path='news' element={<NewsPage />} />
+          <Route path='news/add' element={<NewsFormPage />} />
+          <Route path='news/edit/:id' element={<NewsFormPage edit />} />
           <Route path='comments' element={<CommentsPage />} />
           <Route path='sales' element={<ReportSalesPage />} />
           <Route path='popular' element={<ReportPopularPage />} />
-          <Route path='products/add' element={<ProductsFormPage />} />
-          <Route path='products/edit/:id' element={<ProductsFormPage edit />} />
         </Route>
       </Route>
       {/* Public Routes */}

@@ -16,11 +16,11 @@ import { useState } from "react";
 import { FilePond, registerPlugin } from "react-filepond";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Request } from "../../utils";
+import "../productsFormEdit/style.scss";
 
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import "./style.scss";
 
 // Import the Image EXIF Orientation and Image Preview plugins
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
@@ -156,7 +156,7 @@ export default function FormPropsTextFields() {
         .catch((err) => console.log(err))
         .finally(() => {
           setLoading(false);
-          setTimeout(() => navigate("../products"), 500);
+          setTimeout(() => navigate("../products"), 250);
         });
     }
   };

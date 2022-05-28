@@ -96,7 +96,6 @@ export default function FormPropsTextFields() {
   };
 
   const handleSubmit = (event) => {
-    setChanged((prev) => !prev);
     event.preventDefault();
     if (images.length < 4 && images.length > 0) setError(true);
     else {
@@ -114,19 +113,19 @@ export default function FormPropsTextFields() {
         Price: parseInt(data.get("Price")),
         Image1:
           images.length === 0
-            ? productData.Image1.split("|")[7]
+            ? productData.Image1.split("/")[6]
             : images[0].filename,
         Image2:
           images.length === 0
-            ? productData.Image2.split("|")[7]
+            ? productData.Image2.split("/")[6]
             : images[1].filename,
         Image3:
           images.length === 0
-            ? productData.Image3.split("|")[7]
+            ? productData.Image3.split("/")[6]
             : images[2].filename,
         Image4:
           images.length === 0
-            ? productData.Image4.split("|")[7]
+            ? productData.Image4.split("/")[6]
             : images[3].filename,
       };
       for (let index = 0; index < images.length; ++index) {
@@ -152,7 +151,10 @@ export default function FormPropsTextFields() {
           }
         })
         .catch((err) => console.log(err))
-        .finally(() => setLoading(false));
+        .finally(() => {
+          setImages([]);
+          setChanged((prev) => !prev);
+        });
     }
   };
 
