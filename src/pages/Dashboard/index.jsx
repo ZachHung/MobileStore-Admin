@@ -204,7 +204,10 @@ const Dashboard = () => {
           }}
         >
           <Toolbar />
-          <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
+          <Container
+            maxWidth={pathname === "/comments" ? "xl" : "lg"}
+            sx={{ mt: 4, mb: 4 }}
+          >
             <Grid container spacing={3}>
               <Outlet />
             </Grid>
