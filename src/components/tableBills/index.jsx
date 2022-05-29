@@ -19,8 +19,7 @@ import Tooltip from "@mui/material/Tooltip";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { visuallyHidden } from "@mui/utils";
-import AddIcon from "@mui/icons-material/Add";
-import { Request } from "../../utils";
+import { Request, changeToVND } from "../../utils";
 import Skeleton from "@mui/material/Skeleton";
 import { useSelector, useDispatch } from "react-redux";
 import { error, fetching, success } from "../../redux/userSlice";
@@ -28,7 +27,6 @@ import Modal from "@mui/material/Modal";
 import Stack from "@mui/material/Stack";
 import { Delete, Edit } from "@mui/icons-material";
 import { Link as RouterLink } from "react-router-dom";
-import { Link } from "@mui/material";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -54,16 +52,34 @@ const headCells = [
     label: "ID",
   },
   {
-    id: "Title",
+    id: "CreateAt",
     numeric: false,
     disablePadding: true,
-    label: "Tiêu đề",
+    label: "Ngày đặt hàng",
   },
   {
-    id: "Link",
+    id: "Quantity",
     numeric: false,
     disablePadding: true,
-    label: "Link",
+    label: "Số lượng sản phẩm",
+  },
+  {
+    id: "TypeProduct",
+    numeric: false,
+    disablePadding: true,
+    label: "Phân loại sản phẩm",
+  },
+  {
+    id: "TotalPrice",
+    numeric: false,
+    disablePadding: true,
+    label: "Tổng tiền",
+  },
+  {
+    id: "Status",
+    numeric: false,
+    disablePadding: true,
+    label: "Trạng thái",
   },
   {
     id: "Options",
@@ -138,18 +154,8 @@ const EnhancedTableToolbar = () => {
         id='tableTitle'
         component='div'
       >
-        Danh Sách Bài Viết
+        Danh Sách Hoá Đơn
       </Typography>
-      <Button
-        component={RouterLink}
-        to='./add'
-        variant='contained'
-        sx={{ minWidth: "10rem" }}
-        size='large'
-        endIcon={<AddIcon />}
-      >
-        Thêm mới
-      </Button>
     </Toolbar>
   );
 };
@@ -184,7 +190,7 @@ const ModaleDelete = ({ modalState, setModalState, handleConfirm }) => {
           component='h5'
           textAlign='center'
         >
-          Xoá bài viết ?
+          Xoá hoá đơn ?
         </Typography>
         <Stack
           spacing={2}
@@ -221,21 +227,29 @@ export default function EnhancedTable() {
     let newData = [...data];
     newData.splice(indexID, 1);
     setData(newData);
-    Request.delete("PostController/DeletePost/" + id).catch((err) =>
+    Request.delete("BillController/DeleteBillById/" + id).catch((err) =>
       console.log(err)
     );
   };
 
   React.useEffect(() => {
     dispatch(fetching());
-    Request.get("PostController/GetAllPost")
+    Request.get("BillController/GetAllBill")
       .then((res) => {
         dispatch(success());
-        let filteredData = res.data.map(({ ProductVersions, ...rest }) => {
-          return {
-            ...rest,
-          };
-        });
+        let filteredData = res.data
+          .filter((item) => !item.IsDelete || item.Status !== 3)
+          .map(({ Status, ...rest }) => {
+            return {
+              ...rest,
+              Status:
+                Status === 0
+                  ? "Đang giao"
+                  : Status === 1
+                  ? "Đã giao"
+                  : "Đã đánh giá",
+            };
+          });
         setData(filteredData);
       })
       .catch((err) => {
@@ -324,16 +338,19 @@ export default function EnhancedTable() {
                           <TableCell component='th' id={labelId} scope='row'>
                             {row.Id}
                           </TableCell>
-                          <TableCell padding='none'>{row.Title}</TableCell>
+                          <TableCell padding='none'>{row.CreateAt}</TableCell>
+                          <TableCell padding='none'>{row.Quantity}</TableCell>
                           <TableCell padding='none'>
-                            <Link href={row.Link}>
-                              {row.Link.substring(0, 60) + "..."}
-                            </Link>
+                            {row.TypeProduct}
                           </TableCell>
+                          <TableCell padding='none'>
+                            {changeToVND(row.TotalPrice)}
+                          </TableCell>
+                          <TableCell padding='none'>{row.Status}</TableCell>
 
                           <TableCell align='right'>
                             <Tooltip
-                              title={"Sửa bài viết"}
+                              title={"Sửa hoá đơn"}
                               placement='bottom'
                               arrow
                             >
@@ -347,7 +364,7 @@ export default function EnhancedTable() {
                               </IconButton>
                             </Tooltip>
                             <Tooltip
-                              title={"Xoá bài viết"}
+                              title={"Xoá hoá đơn"}
                               placement='bottom'
                               arrow
                             >

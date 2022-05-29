@@ -24,7 +24,6 @@ function App() {
         <Route path='*' element={<NotFoundPage />} />
         <Route path='*' element={<Dashboard />}>
           <Route index element={<SummaryPage />} />
-          <Route path='orders' element={<OrdersPage />} />
           <Route path='users' element={<UsersPage />} />
           <Route path='products' element={<ProductsPage />} />
           <Route path='products/add' element={<ProductsFormPage />} />
@@ -32,6 +31,8 @@ function App() {
           <Route path='news' element={<NewsPage />} />
           <Route path='news/add' element={<NewsFormPage />} />
           <Route path='news/edit/:id' element={<NewsFormPage edit />} />
+          <Route path='orders' element={<OrdersPage />} />
+          <Route path='orders/edit/:id' element={<OrdersPage edit />} />
           <Route path='comments' element={<CommentsPage />} />
           <Route path='sales' element={<ReportSalesPage />} />
           <Route path='popular' element={<ReportPopularPage />} />
