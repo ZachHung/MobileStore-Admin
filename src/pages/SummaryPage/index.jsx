@@ -12,8 +12,9 @@ const SummaryPage = () => {
             p: 2,
             display: "flex",
             flexDirection: "column",
-            height: 360,
-          }}>
+            height: 400,
+          }}
+        >
           <Chart />
         </Paper>
       </Grid>

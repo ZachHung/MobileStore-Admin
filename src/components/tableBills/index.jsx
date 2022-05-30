@@ -27,6 +27,7 @@ import Modal from "@mui/material/Modal";
 import Stack from "@mui/material/Stack";
 import { Delete, Edit } from "@mui/icons-material";
 import { Link as RouterLink } from "react-router-dom";
+import moment from "moment";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -239,9 +240,10 @@ export default function EnhancedTable() {
         dispatch(success());
         let filteredData = res.data
           .filter((item) => !item.IsDelete || item.Status !== 3)
-          .map(({ Status, ...rest }) => {
+          .map(({ CreateAt, Status, ...rest }) => {
             return {
               ...rest,
+              CreateAt: moment(CreateAt, "DD/MM/YYYY").valueOf(),
               Status:
                 Status === 0
                   ? "Đang giao"
@@ -338,7 +340,9 @@ export default function EnhancedTable() {
                           <TableCell component='th' id={labelId} scope='row'>
                             {row.Id}
                           </TableCell>
-                          <TableCell padding='none'>{row.CreateAt}</TableCell>
+                          <TableCell padding='none'>
+                            {moment(row.CreateAt).format("DD/MM/YYYY")}
+                          </TableCell>
                           <TableCell padding='none'>{row.Quantity}</TableCell>
                           <TableCell padding='none'>
                             {row.TypeProduct}

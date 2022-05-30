@@ -27,6 +27,7 @@ import { error, fetching, success } from "../../redux/userSlice";
 import Modal from "@mui/material/Modal";
 import Stack from "@mui/material/Stack";
 import { LockOpen } from "@mui/icons-material";
+import moment from "moment";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -257,7 +258,12 @@ export default function EnhancedTable() {
         dispatch(success());
         let filteredData = res.data
           .filter((item) => item.Role !== "Admin")
-          .map(({ PassWord, Role, ...others }) => others);
+          .map(({ Birthday, PassWord, Role, ...others }) => {
+            return {
+              ...others,
+              Birthday: moment(Birthday, "DD/MM/YYYY").valueOf(),
+            };
+          });
         console.log(filteredData);
         setData(filteredData);
       })
@@ -356,7 +362,9 @@ export default function EnhancedTable() {
                           </TableCell>
                           <TableCell padding='none'>{row.FullName}</TableCell>
                           <TableCell padding='none'>{row.UserName}</TableCell>
-                          <TableCell padding='none'>{row.Birthday}</TableCell>
+                          <TableCell padding='none'>
+                            {moment(row.Birthday).format("DD/MM/YYYY")}
+                          </TableCell>
                           <TableCell padding='none'>
                             {row.PhoneNumber}
                           </TableCell>

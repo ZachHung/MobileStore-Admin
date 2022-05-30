@@ -10,34 +10,36 @@ import {
   Tooltip,
 } from "recharts";
 import Title from "../title";
+import { Request } from "../../utils";
 
-// Generate Sales Data
-function createData(month, amount) {
-  return { month: "Tháng " + month, amount };
-}
-
-const data = [
-  createData("1", 0),
-  createData("2", 400),
-  createData("3", 800),
-  createData("3", 1200),
-  createData("4", 1600),
-  createData("5", 2000),
-  createData("6", 2400),
-  createData("7", 2800),
-  createData("9", 3200),
-  createData("10", 3600),
-  createData("11", 4000),
-  createData("12", 4400),
-];
+const monthToNum = (mmm) => {
+  return "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(mmm) / 3 + 1;
+};
 
 export default function Chart() {
   const theme = useTheme();
+  const [data, setData] = React.useState(undefined);
+
+  React.useEffect(() => {
+    Request.get(
+      "BillController/GetStatisticByYear/" + new Date().getFullYear()
+    ).then((res) => {
+      let filteredData = res.data;
+      filteredData = Object.keys(filteredData).map((key) => {
+        return {
+          month: "Tháng " + monthToNum(key),
+          amount: filteredData[key] / 1000000,
+        };
+      });
+      console.log(filteredData);
+      setData(filteredData);
+    });
+  }, []);
 
   return (
     <React.Fragment>
       <Title>Năm nay</Title>
-      <ResponsiveContainer>
+      <ResponsiveContainer width='100%' height='100%'>
         <BarChart
           data={data}
           margin={{
@@ -45,7 +47,9 @@ export default function Chart() {
             right: 16,
             bottom: 0,
             left: 24,
-          }}>
+          }}
+          barSize={60}
+        >
           <XAxis
             dataKey='month'
             stroke={theme.palette.text.secondary}
@@ -53,7 +57,8 @@ export default function Chart() {
           />
           <YAxis
             stroke={theme.palette.text.secondary}
-            style={theme.typography.body2}>
+            style={theme.typography.body2}
+          >
             <Label
               angle={270}
               position='left'
@@ -61,8 +66,9 @@ export default function Chart() {
                 textAnchor: "middle",
                 fill: theme.palette.text.primary,
                 ...theme.typography.body1,
-              }}>
-              Doanh thu (vnd)
+              }}
+            >
+              Doanh thu (triệu vnd)
             </Label>
           </YAxis>
           <Tooltip />
@@ -70,8 +76,10 @@ export default function Chart() {
             isAnimationActive={false}
             type='monotone'
             dataKey='amount'
+            unit=' triệu VND'
+            name='Doanh thu'
             fill={theme.palette.primary.main}
-            radius={[8, 8, 0, 0]}
+            radius={[16, 16, 0, 0]}
           />
         </BarChart>
       </ResponsiveContainer>

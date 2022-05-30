@@ -26,6 +26,7 @@ import { error, fetching, success } from "../../redux/userSlice";
 import Modal from "@mui/material/Modal";
 import Stack from "@mui/material/Stack";
 import { Delete } from "@mui/icons-material";
+import moment from "moment";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -232,7 +233,7 @@ export default function EnhancedTable() {
     let newData = [...data];
     newData.splice(indexID, 1);
     setData(newData);
-    Request.delete("BillController/DeleteBillById/" + id).catch((err) =>
+    Request.get("CommentController/DeleteComment/" + id).catch((err) =>
       console.log(err)
     );
   };
@@ -242,7 +243,14 @@ export default function EnhancedTable() {
     Request.get("CommentController/GetAllComment")
       .then((res) => {
         dispatch(success());
-        let filteredData = res.data.filter((item) => !item.IsDelete);
+        let filteredData = res.data
+          .filter((item) => !item.IsDelete)
+          .map(({ CreateAt, ...rest }) => {
+            return {
+              ...rest,
+              CreateAt: moment(CreateAt, "DD/MM/YYYY").valueOf(),
+            };
+          });
         setData(filteredData);
       })
       .catch((err) => {
@@ -337,7 +345,9 @@ export default function EnhancedTable() {
                           </TableCell>
                           <TableCell padding='none'>{row.FullName}</TableCell>
                           <TableCell padding='none'>{row.Rating}</TableCell>
-                          <TableCell padding='none'>{row.CreateAt}</TableCell>
+                          <TableCell padding='none'>
+                            {moment(row.CreateAt).format("DD/MM/YYYY")}
+                          </TableCell>
                           <TableCell padding='none'>{row.Content}</TableCell>
                           <TableCell align='right'>
                             <Tooltip

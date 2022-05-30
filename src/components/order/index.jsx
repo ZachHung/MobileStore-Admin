@@ -1,97 +1,358 @@
 import * as React from "react";
-import Link from "@mui/material/Link";
+import PropTypes from "prop-types";
+import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import Title from "../title";
+import TableSortLabel from "@mui/material/TableSortLabel";
+import Button from "@mui/material/Button";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { visuallyHidden } from "@mui/utils";
+import { Request, changeToVND } from "../../utils";
+import Skeleton from "@mui/material/Skeleton";
+import { useSelector, useDispatch } from "react-redux";
+import { error, fetching, success } from "../../redux/userSlice";
+import Modal from "@mui/material/Modal";
+import Stack from "@mui/material/Stack";
+import moment from "moment";
 
-// Generate Order Data
-function createData(id, date, name, shipTo, paymentMethod, amount) {
-  return { id, date, name, shipTo, paymentMethod, amount };
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
 }
 
-const rows = [
-  createData(
-    0,
-    "16 Mar, 2019",
-    "Elvis Presley",
-    "Tupelo, MS",
-    "VISA ⠀•••• 3719",
-    312.44
-  ),
-  createData(
-    1,
-    "16 Mar, 2019",
-    "Paul McCartney",
-    "London, UK",
-    "VISA ⠀•••• 2574",
-    866.99
-  ),
-  createData(
-    2,
-    "16 Mar, 2019",
-    "Tom Scholz",
-    "Boston, MA",
-    "MC ⠀•••• 1253",
-    100.81
-  ),
-  createData(
-    3,
-    "16 Mar, 2019",
-    "Michael Jackson",
-    "Gary, IN",
-    "AMEX ⠀•••• 2000",
-    654.39
-  ),
-  createData(
-    4,
-    "15 Mar, 2019",
-    "Bruce Springsteen",
-    "Long Branch, NJ",
-    "VISA ⠀•••• 5919",
-    212.79
-  ),
+function getComparator(order, orderBy) {
+  return order === "desc"
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+const headCells = [
+  {
+    id: "Id",
+    numeric: false,
+    disablePadding: false,
+    label: "ID",
+  },
+  {
+    id: "CreateAt",
+    numeric: false,
+    disablePadding: true,
+    label: "Ngày đặt hàng",
+  },
+  {
+    id: "TypeProduct",
+    numeric: false,
+    disablePadding: true,
+    label: "Phân loại sản phẩm",
+  },
+  {
+    id: "Quantity",
+    numeric: false,
+    disablePadding: true,
+    label: "Số lượng",
+  },
+  {
+    id: "TotalPrice",
+    numeric: false,
+    disablePadding: true,
+    label: "Tổng tiền",
+  },
+  {
+    id: "Status",
+    numeric: false,
+    disablePadding: true,
+    label: "Trạng thái",
+  },
 ];
 
-function preventDefault(event) {
-  event.preventDefault();
+function EnhancedTableHead(props) {
+  const { order, orderBy, onRequestSort } = props;
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
+
+  return (
+    <TableHead>
+      <TableRow>
+        {headCells.map((headCell) => (
+          <TableCell
+            key={headCell.id}
+            align={headCell.numeric ? "right" : "left"}
+            padding={headCell.disablePadding ? "none" : "normal"}
+            sortDirection={orderBy === headCell.id ? order : false}
+            sx={{ fontWeight: "bold" }}
+          >
+            {headCell.id !== "options" ? (
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : "asc"}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <Box component='span' sx={visuallyHidden}>
+                    {order === "desc"
+                      ? "sorted descending"
+                      : "sorted ascending"}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            ) : (
+              headCell.label
+            )}
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
 }
 
-export default function Orders() {
+EnhancedTableHead.propTypes = {
+  onRequestSort: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired,
+};
+
+const EnhancedTableToolbar = () => {
+  const theme = useTheme();
   return (
-    <React.Fragment>
-      <Title>Đơn Hàng Gần Đây</Title>
-      <Table size='small'>
-        <TableHead>
-          <TableRow>
-            <TableCell sx={{ fontWeight: "bold" }}>Ngày mua</TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Tên Khách Hàng</TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Địa Chỉ</TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>
-              Phương Thức Thanh Toán
-            </TableCell>
-            <TableCell sx={{ fontWeight: "bold" }} align='right'>
-              Doanh Thu
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.shipTo}</TableCell>
-              <TableCell>{row.paymentMethod}</TableCell>
-              <TableCell align='right'>{`$${row.amount}`}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <Link color='primary' href='#' onClick={preventDefault} sx={{ mt: 3 }}>
-        Hiển thị thêm đơn hàng
-      </Link>
-    </React.Fragment>
+    <Toolbar
+      sx={{
+        pl: { sm: 2 },
+        pr: { xs: 1, sm: 1 },
+      }}
+    >
+      <Typography
+        sx={{ flex: "1 1 100%" }}
+        variant='h6'
+        color={theme.palette.primary.main}
+        id='tableTitle'
+        component='div'
+      >
+        Đơn hàng gần đây
+      </Typography>
+    </Toolbar>
+  );
+};
+const ModaleDelete = ({ modalState, setModalState, handleConfirm }) => {
+  const onConfirm = () => {
+    handleConfirm();
+    setModalState(false);
+  };
+  return (
+    <Modal
+      open={modalState}
+      onClose={() => setModalState(false)}
+      aria-labelledby='modal-modal-title'
+      aria-describedby='modal-modal-description'
+    >
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 300,
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          borderRadius: "1rem",
+          p: 4,
+        }}
+      >
+        <Typography
+          id='modal-modal-title'
+          variant='h5'
+          component='h5'
+          textAlign='center'
+        >
+          Xoá hoá đơn ?
+        </Typography>
+        <Stack
+          spacing={2}
+          direction='row'
+          justifyContent='flex-end'
+          sx={{ mt: 4 }}
+        >
+          <Button variant='text' onClick={() => setModalState(false)}>
+            Huỷ
+          </Button>
+          <Button variant='contained' onClick={onConfirm}>
+            Xoá
+          </Button>
+        </Stack>
+      </Box>
+    </Modal>
+  );
+};
+export default function EnhancedTable() {
+  const [order, setOrder] = React.useState("desc");
+  const [orderBy, setOrderBy] = React.useState("CreateAt");
+  const [page, setPage] = React.useState(0);
+  const [dense, setDense] = React.useState(true);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [data, setData] = React.useState([]);
+  const [modalState, setModalState] = React.useState(false);
+  const [selected, setSelected] = React.useState(0);
+
+  const state = useSelector((state) => state);
+  const dispatch = useDispatch();
+
+  const handleConfirm = (id) => {
+    let indexID = data.findIndex((item) => item.Id === id);
+    let newData = [...data];
+    newData.splice(indexID, 1);
+    setData(newData);
+    Request.delete("BillController/DeleteBillById/" + id).catch((err) =>
+      console.log(err)
+    );
+  };
+
+  React.useEffect(() => {
+    dispatch(fetching());
+    Request.get("BillController/GetAllBill")
+      .then((res) => {
+        dispatch(success());
+        let filteredData = res.data
+          .filter((item) => !item.IsDelete || item.Status !== 3)
+          .map(({ CreateAt, Status, ...rest }) => {
+            return {
+              ...rest,
+              CreateAt: moment(CreateAt, "DD/MM/YYYY").valueOf(),
+              Status:
+                Status === 0
+                  ? "Đang giao"
+                  : Status === 1
+                  ? "Đã giao"
+                  : "Đã đánh giá",
+            };
+          });
+        setData(filteredData);
+      })
+      .catch((err) => {
+        dispatch(error);
+        console.log(err);
+      });
+  }, [dispatch]);
+
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
+
+  const handleOnClick = (id) => {
+    setSelected(id);
+    setModalState(true);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  // Avoid a layout jump when reaching the last page with empty rows.
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+
+  return (
+    <>
+      {!state.isFetching ? (
+        <EnhancedTableToolbar />
+      ) : (
+        <Skeleton variant='text' width='77%'>
+          <Typography variant='h2'>.</Typography>
+        </Skeleton>
+      )}
+      {!state.isFetching ? (
+        <>
+          <ModaleDelete
+            modalState={modalState}
+            setModalState={setModalState}
+            handleConfirm={() => handleConfirm(selected)}
+          />
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              aria-labelledby='tableTitle'
+              size={dense ? "small" : "medium"}
+            >
+              <EnhancedTableHead
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+                rowCount={data.length}
+              />
+              <TableBody>
+                {data
+                  .slice()
+                  .sort(getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const labelId = `enhanced-table-checkbox-${index}`;
+                    return (
+                      <TableRow
+                        hover
+                        role='checkbox'
+                        tabIndex={-1}
+                        key={row.Id}
+                      >
+                        <TableCell component='th' id={labelId} scope='row'>
+                          {row.Id}
+                        </TableCell>
+                        <TableCell padding='none'>
+                          {moment(row.CreateAt).format("DD/MM/YYYY")}
+                        </TableCell>
+                        <TableCell padding='none'>{row.TypeProduct}</TableCell>
+                        <TableCell padding='none'>{row.Quantity}</TableCell>
+                        <TableCell padding='none'>
+                          {changeToVND(row.TotalPrice)}
+                        </TableCell>
+                        <TableCell padding='none'>{row.Status}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow
+                    style={{
+                      height: (dense ? 33 : 53) * emptyRows,
+                    }}
+                  >
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component='div'
+            count={data.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </>
+      ) : (
+        <Skeleton variant='rectangular' width='100' height='30rem'></Skeleton>
+      )}
+    </>
   );
 }

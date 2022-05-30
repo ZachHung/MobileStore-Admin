@@ -98,8 +98,10 @@ const mdTheme = createTheme(themeOptions, locales["viVN"]);
 const pathMap = {
   "/": "Tổng Quan",
   "/products": "Sản Phẩm",
+  "/products/add": "Thêm Sản Phẩm",
   "/comments": "Bình Luận",
   "/news": "Tin Tức",
+  "/news/add": "Thêm Tin Tức",
   "/sales": "Doanh Thu",
   "/popular": "Sản Phẩm Bán Chạy",
   "/orders": "Hoá Đơn",
