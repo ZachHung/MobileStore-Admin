@@ -10,7 +10,6 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { visuallyHidden } from "@mui/utils";
@@ -18,8 +17,6 @@ import { Request, changeToVND } from "../../utils";
 import Skeleton from "@mui/material/Skeleton";
 import { useSelector, useDispatch } from "react-redux";
 import { error, fetching, success } from "../../redux/userSlice";
-import Modal from "@mui/material/Modal";
-import Stack from "@mui/material/Stack";
 import moment from "moment";
 
 function descendingComparator(a, b, orderBy) {
@@ -147,78 +144,16 @@ const EnhancedTableToolbar = () => {
     </Toolbar>
   );
 };
-const ModaleDelete = ({ modalState, setModalState, handleConfirm }) => {
-  const onConfirm = () => {
-    handleConfirm();
-    setModalState(false);
-  };
-  return (
-    <Modal
-      open={modalState}
-      onClose={() => setModalState(false)}
-      aria-labelledby='modal-modal-title'
-      aria-describedby='modal-modal-description'
-    >
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 300,
-          bgcolor: "background.paper",
-          boxShadow: 24,
-          borderRadius: "1rem",
-          p: 4,
-        }}
-      >
-        <Typography
-          id='modal-modal-title'
-          variant='h5'
-          component='h5'
-          textAlign='center'
-        >
-          Xoá hoá đơn ?
-        </Typography>
-        <Stack
-          spacing={2}
-          direction='row'
-          justifyContent='flex-end'
-          sx={{ mt: 4 }}
-        >
-          <Button variant='text' onClick={() => setModalState(false)}>
-            Huỷ
-          </Button>
-          <Button variant='contained' onClick={onConfirm}>
-            Xoá
-          </Button>
-        </Stack>
-      </Box>
-    </Modal>
-  );
-};
 export default function EnhancedTable() {
   const [order, setOrder] = React.useState("desc");
   const [orderBy, setOrderBy] = React.useState("CreateAt");
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(true);
+  const [dense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [data, setData] = React.useState([]);
-  const [modalState, setModalState] = React.useState(false);
-  const [selected, setSelected] = React.useState(0);
 
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
-
-  const handleConfirm = (id) => {
-    let indexID = data.findIndex((item) => item.Id === id);
-    let newData = [...data];
-    newData.splice(indexID, 1);
-    setData(newData);
-    Request.delete("BillController/DeleteBillById/" + id).catch((err) =>
-      console.log(err)
-    );
-  };
 
   React.useEffect(() => {
     dispatch(fetching());
@@ -234,9 +169,9 @@ export default function EnhancedTable() {
               Status:
                 Status === 0
                   ? "Đang giao"
-                  : Status === 1
+                  : Status === 1 || Status === 2
                   ? "Đã giao"
-                  : "Đã đánh giá",
+                  : "Đã huỷ",
             };
           });
         setData(filteredData);
@@ -251,11 +186,6 @@ export default function EnhancedTable() {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
-  };
-
-  const handleOnClick = (id) => {
-    setSelected(id);
-    setModalState(true);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -282,11 +212,6 @@ export default function EnhancedTable() {
       )}
       {!state.isFetching ? (
         <>
-          <ModaleDelete
-            modalState={modalState}
-            setModalState={setModalState}
-            handleConfirm={() => handleConfirm(selected)}
-          />
           <TableContainer>
             <Table
               sx={{ minWidth: 750 }}

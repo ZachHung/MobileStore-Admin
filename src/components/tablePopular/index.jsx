@@ -75,6 +75,12 @@ const headCells = [
     label: "Đã bán",
   },
   {
+    id: "Revenue",
+    numeric: false,
+    disablePadding: true,
+    label: "Doanh thu",
+  },
+  {
     id: "Rating",
     numeric: false,
     disablePadding: true,
@@ -262,6 +268,9 @@ export default function EnhancedTable() {
                             {row.Category ? "Máy tính bảng" : "Điện thoại"}
                           </TableCell>
                           <TableCell padding='none'>{row.SellCount}</TableCell>
+                          <TableCell padding='none'>
+                            {changeToVND(row.Price * row.SellCount)}
+                          </TableCell>
                           <TableCell padding='none'>{row.Rating}</TableCell>
                         </TableRow>
                       );

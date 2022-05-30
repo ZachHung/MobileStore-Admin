@@ -247,9 +247,9 @@ export default function EnhancedTable() {
               Status:
                 Status === 0
                   ? "Đang giao"
-                  : Status === 1
+                  : Status === 1 || Status === 2
                   ? "Đã giao"
-                  : "Đã đánh giá",
+                  : "Đã huỷ",
             };
           });
         setData(filteredData);
