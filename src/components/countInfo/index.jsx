@@ -6,24 +6,6 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import ReviewsIcon from "@mui/icons-material/Reviews";
 import { Request } from "../../utils";
 
-const olddata = [
-  {
-    name: "Người dùng",
-    value: 1,
-  },
-  {
-    name: "Người dùng",
-    value: 1,
-  },
-  {
-    name: "Người dùng",
-    value: 1,
-  },
-  {
-    name: "Người dùng",
-    value: 1,
-  },
-];
 const iconMap = {
   User: <PeopleIcon fontSize='large' sx={{ color: "#f9fafc" }} />,
   Product: <Inventory2Icon fontSize='large' sx={{ color: "#f9fafc" }} />,

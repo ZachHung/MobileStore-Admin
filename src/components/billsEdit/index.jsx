@@ -175,38 +175,38 @@ export default function FormPropsTextFields() {
           </Typography>
           <Stack spacing={2} direction='row'>
             <TextField
-              fullWidth
+              sx={{ flex: "1" }}
               inputProps={{ readOnly: true }}
               name='ProductName'
               label='Tên sản phẩm'
               value={orderData.ProductId?.ProductName}
             />
             <TextField
-              fullWidth
               inputProps={{ readOnly: true }}
+              sx={{ flex: "0.5" }}
               name='ProductId'
               label='Mã sản phẩm'
               value={orderData.ProductId?.Id}
             />
             <TextField
-              fullWidth
+              sx={{ flex: "1" }}
               inputProps={{ readOnly: true }}
               name='TypeProduct'
               label='Tuỳ chọn'
               value={orderData.TypeProduct}
             />
             <TextField
-              fullWidth
+              sx={{ flex: "0.5" }}
               inputProps={{ readOnly: true }}
               name='Quantity'
-              label='Tuỳ chọn'
+              label='Số lượng'
               value={orderData.Quantity}
             />
             <TextField
-              fullWidth
+              sx={{ flex: "1" }}
               inputProps={{ readOnly: true }}
-              name='Giá tiền'
-              label='Tuỳ chọn'
+              name='Price'
+              label='Giá tiền'
               value={orderData.ProductId?.Price}
             />
           </Stack>
