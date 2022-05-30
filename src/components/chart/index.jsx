@@ -38,7 +38,6 @@ export default function Chart({ variant }) {
           amount: filteredData[key] / 1000000,
         };
       });
-      console.log(filteredData);
       setData(filteredData);
     });
   }, [year]);

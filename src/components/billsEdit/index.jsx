@@ -195,6 +195,20 @@ export default function FormPropsTextFields() {
               label='Tuỳ chọn'
               value={orderData.TypeProduct}
             />
+            <TextField
+              fullWidth
+              inputProps={{ readOnly: true }}
+              name='Quantity'
+              label='Tuỳ chọn'
+              value={orderData.Quantity}
+            />
+            <TextField
+              fullWidth
+              inputProps={{ readOnly: true }}
+              name='Giá tiền'
+              label='Tuỳ chọn'
+              value={orderData.ProductId?.Price}
+            />
           </Stack>
         </Stack>
         <Stack spacing={2}>
