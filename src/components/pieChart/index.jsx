@@ -22,7 +22,6 @@ const ChartPie = ({ variant }) => {
     Cancel: theme.palette.error.main,
     Delivering: theme.palette.secondary.main,
     Delivered: theme.palette.primary.main,
-    Completed: theme.palette.primary.dark,
   };
 
   useEffect(() => {
@@ -34,6 +33,8 @@ const ChartPie = ({ variant }) => {
       }`
     ).then((res) => {
       let filteredData = res.data;
+      filteredData.Delivered += filteredData.Completed;
+      delete filteredData.Completed;
       filteredData = Object.keys(filteredData)
         .map((key) => {
           return {
@@ -42,8 +43,6 @@ const ChartPie = ({ variant }) => {
                 ? "Đang giao"
                 : key === "Delivered"
                 ? "Đã giao"
-                : key === "Completed"
-                ? "Đã đánh giá"
                 : "Đã huỷ",
             value: filteredData[key],
             color: colorsMap[key],
