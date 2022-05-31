@@ -10,8 +10,8 @@ import {
   Tooltip,
 } from "recharts";
 import Title from "../title";
-import { Request } from "../../utils";
-import { TextField, MenuItem, Box } from "@mui/material";
+import { changeToVND, Request } from "../../utils";
+import { TextField, MenuItem, Box, Typography } from "@mui/material";
 
 const monthToNum = (mmm) => {
   return "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(mmm) / 3 + 1;
@@ -50,9 +50,7 @@ export default function Chart({ variant }) {
           alignItems: "center",
         }}
       >
-        <Title>
-          {variant ? "Tổng doanh thu năm" : "Tổng doanh thu năm nay"}
-        </Title>
+        <Title>{variant ? "Doanh thu năm" : "Doanh thu năm nay"}</Title>
         {variant && (
           <TextField
             sx={{ width: "8rem", marginLeft: "1rem" }}
@@ -113,6 +111,14 @@ export default function Chart({ variant }) {
           />
         </BarChart>
       </ResponsiveContainer>
+      {variant && (
+        <Typography variant='h5' component='p' sx={{ textAlign: "right" }}>
+          Tổng doanh thu:{" "}
+          <Typography variant='h5' component='span' color='primary'>
+            {changeToVND(data?.reduce((a, b) => a + b.amount, 0) * 10 ** 6)}
+          </Typography>
+        </Typography>
+      )}
     </React.Fragment>
   );
 }

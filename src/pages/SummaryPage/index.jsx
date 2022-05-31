@@ -27,7 +27,7 @@ const SummaryPage = () => {
           <Orders />
         </Paper>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12}>
         <Paper
           sx={{
             p: 2,
@@ -37,18 +37,6 @@ const SummaryPage = () => {
           }}
         >
           <ChartPie />
-        </Paper>
-      </Grid>
-      <Grid item xs={6}>
-        <Paper
-          sx={{
-            p: 2,
-            display: "flex",
-            flexDirection: "column",
-            height: 400,
-          }}
-        >
-          <ChartPie variant />
         </Paper>
       </Grid>
     </>

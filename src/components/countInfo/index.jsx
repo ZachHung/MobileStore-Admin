@@ -62,7 +62,7 @@ const CountInfo = () => {
           <Box
             sx={{
               borderRadius: 1,
-              height: "80%",
+              width: "40%",
               aspectRatio: "1/1",
               display: "flex",
               alignItems: "center",

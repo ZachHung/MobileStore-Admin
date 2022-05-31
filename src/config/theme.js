@@ -19,6 +19,9 @@ export const themeOptions = {
       default: "#ebf1f9",
       paper: "#f9fafc",
     },
+    error: {
+      main: "#FF5555",
+    },
   },
   typography: {
     h1: {

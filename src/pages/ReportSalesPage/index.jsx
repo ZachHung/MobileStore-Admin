@@ -39,7 +39,7 @@ const ReportSalesPage = () => {
             p: 2,
             display: "flex",
             flexDirection: "column",
-            height: 450,
+            height: 500,
           }}
         >
           <Chart variant />
