@@ -211,7 +211,7 @@ const ModaleDelete = ({ modalState, setModalState, handleConfirm }) => {
   );
 };
 export default function EnhancedTable() {
-  const [order, setOrder] = React.useState("asc");
+  const [order, setOrder] = React.useState("desc");
   const [orderBy, setOrderBy] = React.useState("Id");
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);

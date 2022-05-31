@@ -1,71 +1,44 @@
-# Getting Started with Create React App
+# MobileStore Admin
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Trang Admin cho app MobileStore. Đ
 
-## Available Scripts
+## 🏁 Hướng dẫn cài đặt
 
-In the project directory, you can run:
+1. Clone repo này về
 
-### `npm start`
+```shell
+git clone https://github.com/ZachHung/13Team_V2.git
+cd 13Team_V2
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+2. Tải các node module cho backend
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```shell
+npm i
+```
 
-### `npm test`
+3. Tải các node module cho frontend
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```shell
+cd frontend
+npm i
+```
 
-### `npm run build`
+4. Set up các biến môi trường cho backend như các hướng dẫn trong file `.envexample`
+5. Set up một file `.env` trong folder **frontend** là các biến môi trường cho **frontend** có tên là `REACT_APP_SERVER_PATH` chứa URL host của backend, mặc định sẽ có giá trị `http://localhost:5000`. Biến này sẽ được sử dụng để lấy các URL request từ API.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 📃 Hướng dẫn sử dụng
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Để tiện lợi cho việc phát triển trang web, tôi đã tạo một số script sau đây:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **npm run server**: chạy backend.
+- **npm run client**: chạy frontend.
+- **npm run dev**: chạy cả hai backend và frontend.
 
-### `npm run eject`
+## ❗ Lưu ý
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Để giải thiểu phát sinh lỗi khi cài đặt và sử dụng hãy nhớ các lưu ý sau đây:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# MobileStore-Admin
+- Chú ý là mình đang ở thư mục **frontend** hoặc **backend** trước khi chạy các lệnh npm.
+- Hãy sử dụng các biến môi trường để gọi API thay vì hardcode vô. Sau này chúng ta còn host nữa, nếu hardcode URL của API thì khi host website chúng ra sẽ phải chỉnh sửa code lại rất mất công. Thay vì thế hãy dùng biến môi trường `REACT_APP_SERVER_PATH`.
+- Khi muốn redirect sau khi gọi API chúng ta không nên redirect trong API luôn mà hãy redirect bằng **frontend**. React-router có cung cấp một hook tên là **useNavigate** để phục vụ cho việc này. [Document của useNavigate](https://reactrouter.com/docs/en/v6/api#usenavigate)
