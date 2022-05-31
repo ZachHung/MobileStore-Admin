@@ -47,7 +47,14 @@ export default function FormPropsTextFields() {
       .then((resOG) => {
         data = resOG.data;
         Request.get("ProductController/GetProductByID/" + resOG.data.ProductId)
-          .then((res) => (data.ProductId = res.data))
+          .then((res) => {
+            data.ProductId = res.data;
+            let index = data.ProductId.ProductVersions.findIndex(
+              (item) => item.VersionName === data.TypeProduct.split(", ")[0]
+            );
+            data.ProductId.VersionPrice =
+              data.ProductId.ProductVersions[index].Price;
+          })
           .then(() =>
             Request.get(
               "ShipmentController/GetShipmentById/" + resOG.data.ShipmentId
@@ -59,6 +66,7 @@ export default function FormPropsTextFields() {
             ).then((res) => {
               data.AccountId = res.data;
               setStatus(data.Status);
+              console.log(data);
               setOrderData(data);
               setLoading(false);
             })
@@ -207,7 +215,7 @@ export default function FormPropsTextFields() {
               inputProps={{ readOnly: true }}
               name='Price'
               label='Giá tiền'
-              value={orderData.ProductId?.Price}
+              value={orderData.ProductId?.VersionPrice}
             />
           </Stack>
         </Stack>
